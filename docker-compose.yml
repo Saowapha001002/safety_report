@@ -1,0 +1,73 @@
+version: '3.9'
+ 
+# Network for Laravel
+networks:
+  web_network:
+    name: mg
+    driver: bridge
+ 
+services:
+ 
+  # PHP App Service 
+  app:
+    build:
+      context: .  
+      dockerfile: Dockerfile
+    image: mg-app
+    container_name: mg_app
+    restart: always
+    volumes:
+      - ./src:/var/www
+    networks:
+      - web_network
+ 
+  # MySQL Database Service
+  db:
+    #image: mysql:8.0
+    #บน Server 
+    image: mysql:5.7 
+    container_name: mg_mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password1234!!
+      - MYSQL_DATABASE=otoptiu_db
+      - MYSQL_USER=otoptiu_db
+      - MYSQL_PASSWORD=password1234!!
+    # platform: linux/amd64
+    # ปิดการเปิด post 3306
+    # ports:
+    #   - "3306:3306"
+    restart: always
+    networks:
+      - web_network
+ 
+  # Nginx Web Server Service
+  nginx:
+    image: nginx
+    container_name: mg_nginx
+    volumes:
+      - ./src:/var/www
+      - ./nginx/conf:/etc/nginx/conf.d
+    ports:
+      - "8000:80"
+    restart: always
+    networks:
+      - web_network
+  # phpMyAdmin (MySQL managment)
+  phpmyadmin:
+    image: phpmyadmin:5.1.0-apache
+    depends_on:
+      - db
+    container_name: mg_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      #login เอง 
+      # PMA_USER: admin
+      # PMA_PASSWORD: password1234
+    ports:
+      - 8080:80
+    restart: always
+    networks:
+      - web_network

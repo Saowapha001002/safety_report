@@ -1,0 +1,181 @@
+/* FC Iconic Thin */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-Thin.eot');
+    src: url('FC-Iconic-Thin.eot#iefix') format('embedded-opentype'), url('FC-Iconic-Thin.woff') format('woff'), url('FC-Iconic-Thin.woff2') format('woff2'), url('FC-Iconic-Thin.ttf') format('truetype'), url('FC-Iconic-Thin.svg') format('svg');
+    font-weight: 100;
+}
+
+
+/* FC Iconic ExtraLight */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-ExtraLight.eot');
+    src: url('FC-Iconic-ExtraLight.eot#iefix') format('embedded-opentype'), url('FC-Iconic-ExtraLight.woff') format('woff'), url('FC-Iconic-ExtraLight.woff2') format('woff2'), url('FC-Iconic-ExtraLight.ttf') format('truetype'), url('FC-Iconic-ExtraLight.svg') format('svg');
+    font-weight: 200;
+}
+
+
+/* FC Iconic Light */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-Light.eot');
+    src: url('FC-Iconic-Light.eot#iefix') format('embedded-opentype'), url('FC-Iconic-Light.woff') format('woff'), url('FC-Iconic-Light.woff2') format('woff2'), url('FC-Iconic-Light.ttf') format('truetype'), url('FC-Iconic-Light.svg') format('svg');
+    font-weight: 300;
+}
+
+
+/* FC Iconic Regular */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-Regular.eot');
+    src: url('FC-Iconic-Regular.eot#iefix') format('embedded-opentype'), url('FC-Iconic-Regular.woff') format('woff'), url('FC-Iconic-Regular.woff2') format('woff2'), url('FC-Iconic-Regular.ttf') format('truetype'), url('FC-Iconic-Regular.svg') format('svg');
+    font-weight: 400;
+}
+
+
+/* FC Iconic Medium */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-Medium.eot');
+    src: url('FC-Iconic-Medium.eot#iefix') format('embedded-opentype'), url('FC-Iconic-Medium.woff') format('woff'), url('FC-Iconic-Medium.woff2') format('woff2'), url('FC-Iconic-Medium.ttf') format('truetype'), url('FC-Iconic-Medium.svg') format('svg');
+    font-weight: 500;
+}
+
+
+/* FC Iconic SemiBold */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-SemiBold.eot');
+    src: url('FC-Iconic-SemiBold.eot#iefix') format('embedded-opentype'), url('FC-Iconic-SemiBold.woff') format('woff'), url('FC-Iconic-SemiBold.woff2') format('woff2'), url('FC-Iconic-SemiBold.ttf') format('truetype'), url('FC-Iconic-SemiBold.svg') format('svg');
+    font-weight: 600;
+}
+
+
+/* FC Iconic Bold */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-Bold.eot');
+    src: url('FC-Iconic-Bold.eot#iefix') format('embedded-opentype'), url('FC-Iconic-Bold.woff') format('woff'), url('FC-Iconic-Bold.woff2') format('woff2'), url('FC-Iconic-Bold.ttf') format('truetype'), url('FC-Iconic-Bold.svg') format('svg');
+    font-weight: 700;
+}
+
+
+/* FC Iconic ExtraBold */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-ExtraBold.eot');
+    src: url('FC-Iconic-ExtraBold.eot#iefix') format('embedded-opentype'), url('FC-Iconic-ExtraBold.woff') format('woff'), url('FC-Iconic-ExtraBold.woff2') format('woff2'), url('FC-Iconic-ExtraBold.ttf') format('truetype'), url('FC-Iconic-ExtraBold.svg') format('svg');
+    font-weight: 800;
+}
+
+
+/* FC Iconic Black */
+
+@font-face {
+    font-family: "FC Iconic";
+    src: url('FC-Iconic-Black.eot');
+    src: url('FC-Iconic-Black.eot#iefix') format('embedded-opentype'), url('FC-Iconic-Black.woff') format('woff'), url('FC-Iconic-Black.woff2') format('woff2'), url('FC-Iconic-Black.ttf') format('truetype'), url('FC-Iconic-Black.svg') format('svg');
+    font-weight: 900;
+}
+
+body {
+    font-family: "FC Iconic" !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*--------------------------------------------------------------------------------*/
+.light h1 {
+	font-size: 30vw;
+	font-weight: 900;
+	line-height: 0;
+	/* will-change: margin-top; */
+}
+
+/* safari hack */
+@media not all and (min-resolution: 0.001dpcm) {
+	@supports (-webkit-appearance: none) {
+		.light h1 {
+			line-height: 1em;
+		}
+	}
+}
+
+/* Medium (md) */
+@media (min-width: 768px) {
+	.light h1 {
+		font-size: 16em;
+	}
+}
+/* Large (lg) */
+@media (min-width: 1024px) {
+	.light h1 {
+		font-size: 16em;
+	}
+}
+
+/* Extra Large (xl) */
+@media (min-width: 1280px) {
+	.light h1{
+		font-size: 20em;
+	}
+}
+
+/* Super Extra Large (xxl) */
+@media (min-width: 1440px) {
+.light h1 {
+		font-size: 21em;
+	}
+}
