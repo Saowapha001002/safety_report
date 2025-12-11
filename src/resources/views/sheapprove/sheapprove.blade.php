@@ -342,3 +342,18 @@
         <!-- / Layout page -->
     </div>
 @endsection
+
+@section('csslogin')
+<!-- Vendor -->
+<link rel="stylesheet" href="{{ asset('template/assets/vendor/css/rtl/core.css') }}" />
+<link rel="stylesheet" href="{{ asset('template/assets/vendor/libs/bs-stepper/bs-stepper.css') }}" />
+<link rel="stylesheet" href="{{ asset('template/assets/vendor/libs/bootstrap-select/bootstrap-select.css') }}" />
+<link rel="stylesheet" href="{{ asset('template//assets/vendor/libs/select2/select2.css') }}" />
+<link rel="stylesheet" href="{{ asset('template/assets/vendor/libs/@form-validation/umd/styles/index.min.css') }}" />
+
+
+@endsection
+
+@section('customjs')
+  <script src="{{ asset('assets/js/pages-she-approve.js') }}"></script>
+@endsection
