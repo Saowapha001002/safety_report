@@ -58,7 +58,7 @@
         <table class="email-container">
             <tr>
                 <td class="email-header">
-                    แจ้งเติอน ระบบ Magic Finger
+                    แจ้งเติอน ระบบ Magic Finger </br>( Job: {{ $safety_code }},ผู้ได้รับมอบหมาย: {{ $name }})
                 </td>
             </tr>
             <tr>

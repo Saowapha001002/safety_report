@@ -33,10 +33,7 @@ $('#file-container').on('click', '.btn-remove', function () {
     let formData = new FormData(formApprove);
 
     console.log(formData);
-    console.log(formData.get('msCauseCheck'));
-    console.log(formData.get('msCauseCheck') === '1');
-    console.log(formData.get('msCauseCheck') === '0');
-    console.log(formData.get('msCauseCheck') === '1' ? 'true' : 'false');
+
 
     $.ajax({
       url: '/approve/save',
@@ -48,10 +45,12 @@ $('#file-container').on('click', '.btn-remove', function () {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
       },
       success: function (response) {
+// console.log(response);
+
         if (response) {
           Swal.fire({
             title: response.message,
-            icon: response.success,
+            icon: response.class,
             customClass: {
               confirmButton: 'btn btn-primary waves-effect waves-light',
             },
@@ -64,8 +63,10 @@ $('#file-container').on('click', '.btn-remove', function () {
         }
       },
       error: function (xhr) {
-        console.error('เกิดข้อผิดพลาด:', xhr.responseText);
-        alert('เกิดข้อผิดพลาดขณะบันทึกข้อมูล');
+            console.error('status:', xhr.status);
+            console.error('error :', error);
+            console.error('responseText:', xhr.responseText);
+            alert('เกิดข้อผิดพลาดขณะบันทึกข้อมูล');
       },
     });
   });

@@ -1,0 +1,23 @@
+# Laravel
+/vendor/
+node_modules/
+storage/
+bootstrap/cache/
+
+# Env
+.env
+.env.*
+/phpunit.result.cache
+
+# Docker volumes / local services
+mysq/
+mysql/
+nginx/
+dockerconfig/
+
+# Laravel build
+/public/hot
+/public/storage
+/public/build
+/public/mix-manifest.json
+/storage/*.key

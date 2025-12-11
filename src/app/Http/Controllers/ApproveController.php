@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Helpers\MailHelper;
 use App\Models\Approve;
 use App\Models\Cause;
@@ -12,17 +14,17 @@ use App\Models\Safety;
 use App\Models\Tracking;
 use App\Models\User;
 use App\Models\Valldataemp;  
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Carbon\Carbon; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Helpers\ApproverHelper; 
 
 class ApproveController extends Controller
 {
 
     public function index()
     {
-         return view('approve.approve');
+        return view('approve.approve');
     }
 
     public function show($id)
@@ -85,239 +87,111 @@ class ApproveController extends Controller
 
 
 
-     /**
-     * Display the specified resource.
-     */
-   public function store(Request $request)
-{ 
-    $todaySend = Carbon::now()->format('Ymd');
-    $id = $request->input('safety_id');
-    $approveEdit = Safety::where('id', $id)->first();                 
-    $approveEdit->safety_status = 2;     // 2 = Assign approve ส่งต่อไปให้ SHE
-             
-    try {
-        $event_save = $approveEdit->save();
 
-        if ($event_save) {                
-            $safety_code = $request->input('safety_code');
-            $tracking = Tracking::where('safety_code', $safety_code)->first(); 
-
-            if (!$tracking) {
-                return response()->json([
-                    'status'=> 500,
-                    'success' => 'error',
-                    'message' => 'ไม่พบข้อมูลการติดตาม'
-                ]);
-            } 
-
-            // ----- อัปเดต tracking -----
-            if ($request->hasFile('files')) {
-                foreach ($request->file('files') as $file) {
-                    $filename = Str::random() . '.' . $file->getClientOriginalExtension();
-                    $path = $file->storeAs('images/head_solve_img', $filename, 'public');
-                    // ถ้ามีหลายไฟล์จริง ๆ อาจต้องเก็บเป็น JSON / ตารางแยก
-                    $tracking->assign_solve_img = $path;                 
-                }
-            } 
-
-            $tracking->assign_success_date = $todaySend;
-            $tracking->assign_solve_date   = $request->input('sDateEdit');
-            $tracking->assign_status       = 1; 
-            $tracking->save();
-
-            // ----- เตรียมข้อมูลเมล -----
-            $link = route('sheapprove.magic.login', ['token' => $tracking->login_token]);
-
-            $data = [
-                'headname'      => 'saowapha', // คนที่ส่งต่อ/แก้ไข
-                'name'          => 'saowapha khemlueang', // user
-                'departuredate' => $todaySend,
-                'remark'        => 'เหตุการณ์ไม่ปลอดภัยได้รับการแก้ไขเรียบร้อยแล้ว',
-                'safety_code'   => $tracking->safety_code,
-                'link'          => $link,
-                'safety_status' => $approveEdit->safety_status,
-            ];
-
-            // แนบไฟล์ (ถ้าต้องแนบรูปที่บันทึกไปด้วย)
-            $attachments = [];
-            if ($tracking->assign_solve_img) {
-                $attachments[] = storage_path('app/public/' . $tracking->assign_solve_img);
-            }
-
-            // ----- ส่งเมลแบบ queue -----
-            MailHelper::queueSafetyMail(
-                // ส่งได้หลายคน: ใส่เป็น array
-                $to  = ['saowapha.k@bgiglass.com'],   // ปรับทีหลังให้ใช้เมล SHE จริง
-                $cc  = null,                          // หรือ ['xxx@bgc.co.th']
-                $bcc = null,
-                $subject     = 'แจ้งการรายงาน Magic Finger SHE',
-                $view        = 'mails.notify_assign_edit', // ใช้ template เดิมได้เลย
-                $viewData    = $data,
-                $attachments = $attachments
-            );
-
-            return response()->json([
-                'status'=> 200,
-                'success' => 'success',
-                'message' => 'บันทึกข้อมูลเรียบร้อยแล้ว'
-            ]);
-
-        } else {
-            return response()->json([
-                'status'=> 500,
-                'success' => 'error',
-                'message' => 'ไม่สามารถบันทึกข้อมูลได้'
-            ]);
-        }
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'status'=> 500,
-            'success' => 'error',
-            'message' => $e->getMessage()
-        ]);
-    }
-}
-
-
-    public function confirm(Request $request, $id)
+    public function store(Request $request)
     {
-        $approve = Tracking::findOrFail($id);
-        $action = $request->input('action');
-        $reason = $request->input('reason');
-        $typeapprove = $request->input('typeapprove');
-        $expenseempid = $request->input('expenseempid');
-        $departuredate = $request->input('departuredate');
-        $approvename = $request->input('approvename');
-        $expenseid = $request->input('expenseid');
-        $empemail = $request->input('empemail');
-        $empfullname = $request->input('empfullname');
 
-        if ($approve->statusapprove !== 0) {
-            return back()->with([
-                'message' => 'คุณได้ดำเนินการไปแล้ว',
-                'class' => 'error'
-            ]);
-        }
+        $sDateEdit      = $request->input('sDateEdit');     // วันที่จะแก้ไข
+        $sSafety_code   = $request->input('safety_code');
+        $note           = $request->input('note');
+        $iMsCheck       = $request->input('msCheck');      // เมลผู้รายงาน
+        $iSafety_id       = $request->input('safety_id');      // เมลผู้รายงาน
 
+        $approve        = Tracking::findOrFail($iSafety_id);
+        $token          = $approve->login_token;
+
+        // token หมดอายุ
         if (now()->greaterThan($approve->token_expires_at)) {
-            return back()->with([
+             return response()->json([
                 'message' => 'ลิงก์หมดอายุแล้ว',
-                'class' => 'error'
+                'class'   => 'error',
             ]);
         }
 
-        if ($action === 'reject' && empty($reason)) {
-            return back()->with([
-                'message' => 'กรุณากรอกเหตุผลที่ไม่อนุมัติ',
-                'class' => 'error'
-            ]);
+        // =========================
+        // 1) อัปเดตผลของ SHE-Plant
+        // =========================
+        $todaySend = Carbon::now()->format('Ymd');
+        $approve->assign_status       =  $iMsCheck; // 1=อนุมัติ/แก้ไขแล้ว อนุมัติ
+        $approve->assign_solve_date   =  $sDateEdit; // วันที่กำหนดเสร็จ
+        $approve->assign_solve_detail =  $note; // แนวทางรายละเอียดการแก้ไข
+        $approve->updated_at           =  Carbon::now(); // วันที่แก้ไข
+        if ($iMsCheck == 1) {
+            $approve->she_success_date  = Carbon::now(); // วันที่แก้ไขสำเร็จ 
         }
 
-        $approve->statusapprove = $request->action === 'approve' ? 1 : 2;
-        $approve->remark = $reason; // หรือ reject_reason
-        $approve->save();
+        try {
+            $isSaved = $approve->save();
 
-        // ✅ ส่งเมลเฉพาะกรณี reject
-        if ($request->action === 'reject') {
-            $data = [
-                'headname' => $approvename, // คนที่ reject
-                'name' => $empfullname, // user
-                'expenseid' => $approve->exid, //exid
-                'departuredate' => $departuredate,
-                'remark' => $reason,
-            ];
-
-            MailHelper::sendExternalMail(
-                $empemail, // ผู้รับ คือ ผู้ขอเบิก
-                'แจ้งผลการไม่อนุมัติการเบิกเบี้ยเลี้ยง',
-                'mails.reject', // ชื่อ blade view mail
-                $data,
-                'Expense Claim System EX' . $approve->exid,
-            );
-        }
-
-        $nextempid = '';
-        $nextemail = '';
-        $nextfullname = '';
-
-        if ($approve->typeapprove == 4 || $approve->typeapprove == 2) {
-            // ✅ หากอนุมัติสำเร็จ สร้าง approve ถัดไป
-            if ($approve->statusapprove === 1) {
- 
-                $nextempid = '66000510';
-                $nextemail = 'kamolwan.b@bgiglass.com';
-                $nextfullname = 'กมลวรรณ บรรชา';
-                // ตั้งค่าข้อมูลผู้อนุมัติถัดไป (HR ผุู้จัดการฝ่าย)
-                if($approve->typeapprove == 2){
-                    $nextType = 1;
-                }else{
-                    $nextType = $approve->typeapprove + 1;
-                }
-
-
-                $token = Str::random(64);
-                $nextApprove = Tracking::create([
-                    'exid' => $approve->exid,
-                    'typeapprove' => $nextType,
-                    'empid' => $nextempid,
-                    'email' => $nextemail,
-                    'approvename' => $nextfullname,
-                    'emailstatus' => 1,
-                    'statusapprove' => 0,
-                    'login_token' => $token,
-                    'token_expires_at' => now()->addDays(10),
+            if (!$isSaved) {
+                return response()->json([
+                    'message' => 'บันทึกสถานะ SHE-Plant ไม่สำเร็จ',
+                    'class'   => 'error'
                 ]);
-
-                // ✅ ส่งอีเมลลิงก์อนุมัติรอบถัดไป
-                $link = route('approve.magic.login', ['token' => $token]);
-
-                $data = [
-                    'type' => $nextType,
-                    'title' => 'แจ้งเตือนการอนุมัติการเบิกเบี้ยเลี้ยง',
-                    'name' => $nextfullname,
-                    'full_name' => $empfullname,
-                    'departuredate' => $departuredate ?? '',
-                    'check_hr' => $approvename,
-                    'link' => $link,
-                ];
-
-                MailHelper::sendExternalMail(
-                    $nextemail,
-                    'อนุมัติการเบิกเบี้ยเลี้ยง',
-                    'mails.hrheadapprove',
-                    $data,
-                    'Expense Claim System EX' . $approve->exid,
-                );
             }
-        }
 
-        if($approve->typeapprove == 5 && $approve->statusapprove === 1){
-            // อนุมัติขั้นตอนสุดท้ายเสร็จ
-            // $linksuccess = route('approve.magic.login', ['token' => $token]);
+            $safety = Safety::where('safety_code', $approve->safety_code)->first();
+            if (!$safety) {
+                 return response()->json([
+                    'message' => 'ไม่พบข้อมูลรายงานหลัก (safety_report)',
+                    'class'   => 'error',
+                ]);
+            }
+            // เปลี่ยนสถานะว่าตอนนี้เข้าสเต็ป SHE แล้ว
+            $safety->safety_status = 2;    // 2 = ส่งต่อ SHE-Plant
+            $safety->save();
+            // หา SHE-Plant จาก approver_plant_mapping โดยใช้ plant_code ของ report_plant
+            $plantCode = $safety->location_view; // เช่น   BGC 
+          
+            // **ตรงนี้ให้เช็คในตาราง approver_role_master ว่า role_code จริงชื่ออะไร**       
+            $sheApprover = ApproverHelper::getApproversByPlantCode($plantCode);
+
+            // dd($sheApprover);
+
+            if (!$sheApprover) {
+              return response()->json([
+                    'message' => 'ไม่พบผู้รับผิดชอบ SHE-Plant ของ ' . $plantCode,
+                    'class'   => 'error',
+                ]);
+            }
+
+            $link = route('sheapprove.magic.login', ['token' => $token]);
 
             $data = [
-                'type' => 5,
-                'title' => 'แจ้งเตือนการอนุมัติการเบิกเบี้ยเลี้ยง',
-                'name' => $empfullname,
-                'full_name' => $empfullname,
-                'departuredate' => $departuredate ?? '',
+                'headname'      => $sheApprover['she']->emp_name, // คนที่จะได้รับเรื่อง (SHE-Plant)
+                'name'          => $safety->report_name,
+                'sDateEdit'     => $sDateEdit ?? $todaySend,
+                'remark'        => 'เหตุการณ์ไม่ปลอดภัยได้รับการแก้ไขเรียบร้อยแล้ว',
+                'safety_code'   => $approve->safety_code,
+                'link'          => $link,
+                'safety_status' => $safety->safety_status,
             ];
 
             MailHelper::sendExternalMail(
-                $empemail,
-                'อนุมัติการเบิกเบี้ยเลี้ยง',
-                'mails.success',
+               $sheApprover['she']->emp_email,
+                'แจ้งการรายงาน Magic Finger ให้ SHE-Plant',
+                'mails.notify_assign_edit',   // หรือ mails.notify_she_end ถ้าแยก template
                 $data,
-                'Expense Claim System EX' . $approve->exid,
+                'Magic Finger System'
             );
-        }
 
-        return back()->with([
-            'message' => 'บันทึกผลอนุมัติเรียบร้อย',
-            'class' => 'success'
-        ]);
-    }
+             return response()->json([
+                'message' => 'บันทึกผลอนุมัติเรียบร้อย และส่งเมลให้ SHE-Plant แล้ว',
+                'class'   => 'success',
+            ]);
 
- 
+
+            // เช็คว่ามี field ถูกเปลี่ยนจริงไหม
+            if (!$approve->wasChanged()) {
+                logger("Approve updated but no fields actually changed");
+             }
+         } catch (\Exception $e) {
+             return response()->json([
+              'message' => 'เกิดข้อผิดพลาด : ' . $e->getMessage(),
+              'class'   => 'error'
+           ]);
+         }
+      }
+
+   
 }

@@ -44,9 +44,8 @@ class SheapproveController extends Controller
         if($Safety){
             $Cause = Cause::where('id', $Safety->cause_id)->first();  
             $Event = Event::where('id', $Safety->event_id)->first();  
-            $Rank = Rank::where('id', $Safety->rank_id)->first();  
-            
-        }       
+            $Rank = Rank::where('id', $Safety->rank_id)->first();              
+        }
 
 
             if ($Rank->id == 1) {
@@ -117,24 +116,24 @@ class SheapproveController extends Controller
                         $tracking->save(); // ✅ ถูกต้อง 
                     } 
                    
-                    $link = route('manager.magic.login', ['token' => $tracking->login_token]);
-                    $data = [
-                        'headname' => 'saowapha', // คนที่ reject
-                        'name' => 'saowapha khemlueang', // user
-                        'departuredate' => $todaySend ,
-                        'remark' => 'เหตุการณ์ไม่ปลอดภัยได้รับการแก้ไขเรียบร้อยแล้ว',
-                        'safety_code' => $tracking->safety_code,
-                        'link' => $link,
-                        'safety_status' => $approveEdit->safety_status,
-                    ];
+                    // $link = route('manager.magic.login', ['token' => $tracking->login_token]);
+                    // $data = [
+                    //     'headname' => 'saowapha', // คนที่ reject
+                    //     'name' => 'saowapha khemlueang', // user
+                    //     'departuredate' => $todaySend ,
+                    //     'remark' => 'เหตุการณ์ไม่ปลอดภัยได้รับการแก้ไขเรียบร้อยแล้ว',
+                    //     'safety_code' => $tracking->safety_code,
+                    //     'link' => $link,
+                    //     'safety_status' => $approveEdit->safety_status,
+                    // ];
 
-                    MailHelper::sendExternalMail(
-                        'saowapha.k@bgiglass.com',
-                        'แจ้งการรายงาน Magic Finger',
-                        'mails.notify_she_end', // ชื่อ blade view mail
-                        $data,
-                        'แจ้งการรายงาน Magic Finger',
-                    );
+                    // MailHelper::sendExternalMail(
+                    //     'saowapha.k@bgiglass.com',
+                    //     'แจ้งการรายงาน Magic Finger',
+                    //     'mails.notify_she_end', // ชื่อ blade view mail
+                    //     $data,
+                    //     'แจ้งการรายงาน Magic Finger',
+                    // );
                     
                     return response()->json([
                         'status'=> 200,

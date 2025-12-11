@@ -21,12 +21,12 @@ class MailHelper
      */
     public static function queueSafetyMail(
         $to,
-        $cc = null,         
-        $bcc = null,         
         string $subject,
         string $view,
         array $viewData = [],
-        array $attachments = []
+        array $attachments = [],
+        $cc = null,
+        $bcc = null
     ): bool {
         try {
             $mailable = new SafetyReportMail($subject, $view, $viewData, $attachments);
@@ -41,7 +41,7 @@ class MailHelper
                 $mailer->bcc($bcc);
             }
 
-            // ส่งแบบ queue (ไม่ดีเลย์ตอน user กดบันทึก)
+            // ส่งแบบ queue
             $mailer->queue($mailable);
 
             return true;
@@ -55,6 +55,7 @@ class MailHelper
             return false;
         }
     }
+
 
     /**
      * ====== ฟังก์ชันเดิม (ยิง API ภายนอก) เก็บไว้ใช้ต่อได้ ======

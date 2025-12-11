@@ -58,7 +58,7 @@
         <table class="email-container">
             <tr>
                 <td class="email-header">
-                    แจ้งเติอน ระบบ Magic Finger
+                    แจ้งเติอน ระบบ Magic Finger </br> ( Job:{{ $safety_code }},SHE-PLANT: {{ $name }})
                 </td>
             </tr>
             <tr>
@@ -66,7 +66,8 @@
                     <td class="email-body">
                         <p><strong>เรียน หน่วยงาน SHE  คุณ {{ $name }}</strong></p>
                         <p><strong>เรื่อง ข้อมูลการรายงาน Magic Finger ใบงานเลขที่ {{ $safety_code }}</strong></p>
-                        <p>รายละเอียดการรายงาน ได้รับการแก้ไขแล้ว โปรดพิจารณาตรวจสอบ  </p>
+                        <p>รายละเอียดการรายงานที่ดำเนินการแก้ไขเรียบร้อยแล้ว หรือรอการแก้ไข โปรดพิจารณาตรวจสอบ
+                        </p>
                         {{-- <p>เนื่องจาก {{ $remark }}</p> --}}
                         <p> <a href="{{ $link }}">คลิกที่นี่</a> </p>
                         <p>จึงเรียนเรียนมาเพื่อทราบ</p>
