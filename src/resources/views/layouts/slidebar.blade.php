@@ -18,6 +18,17 @@
                 <div data-i18n="Admin Checking">Admin Checking</div>
             </a>
         </li>
+
+         <li class="menu-header fw-medium mt-4">
+            <span class="menu-header-text" data-i18n="AdminApprove">Deshboard</span>
+        </li>
+        <li class="menu-item  @if (Route::is('dashboard.index')) active @endif">
+            <a href="{{ route('dashboard.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-file-check"></i>
+                <div data-i18n="Admin Checking">Deshboard</div>
+            </a>
+        </li>
+
         <li class="menu-header fw-medium mt-4">
             <span class="menu-header-text" data-i18n="Master Data">Master Data</span>
         </li>

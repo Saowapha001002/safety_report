@@ -8,6 +8,10 @@ use App\Models\Event;
 use App\Models\Rank;
 use App\Models\Safety;
 use App\Models\Tracking;
+use App\Models\PlantMaster; 
+use Illuminate\Support\Str;
+ use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CheckMagicFingerController extends Controller
@@ -32,35 +36,9 @@ class CheckMagicFingerController extends Controller
     
         return view('back.checkmagicfinger.list', compact('safeties'));
     }
+  
 
-    
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
+ 
     /**
      * Show the form for editing the specified resource.
      */
@@ -69,7 +47,7 @@ class CheckMagicFingerController extends Controller
         $Tracking = Tracking::findOrFail($id);   
         $exMail = '';
         $exName = '';
-        $Cause = '';
+        $Cause = '';       
 
          if ($Tracking) {
             $Safety =  Safety::where('safety_code', $Tracking->safety_code)->first();
@@ -77,22 +55,17 @@ class CheckMagicFingerController extends Controller
             return response()->view('manager.manager_expired', [
                 'message' => 'Token หมดอายุหรือไม่ถูกต้อง'
             ]);
-        }
-
-     
+        }     
 
         if($Safety){
-              $Cause = Cause::get();  
-              $Event = Event::all() ;
-            //   dd($Cause);
-            // $Cause = Cause::where('id', $Safety->cause_id)->first();  
-            // $Event = Event::where('id', $Safety->event_id)->first();  
+            $Cause = Cause::get();  
+            $Event = Event::all() ;  
             $Rank = Rank::where('id', $Safety->rank_id)->first();  
             $selectedCauseId  = $Safety->cause_id ;  
             $selectedEventId  = $Safety->event_id ;  
+        }  
 
-        }       
-
+         $plants = PlantMaster::all();
 
             if ($Rank->id == 1) {
             $Class_rank = 'card-border-shadow-danger';
@@ -106,22 +79,88 @@ class CheckMagicFingerController extends Controller
             } else {
                 $Class_rank = '';
                 $Class_rank_label = '';
-            }
- 
+            } 
             
-        return view('back.checkmagicfinger.checkmagicfinger', compact('Tracking', 'Safety', 'selectedCauseId', 'selectedEventId', 'Cause','Event','Rank', 'Class_rank'
-        ,'Class_rank_label','exMail', 'exName'));
+            return view('back.checkmagicfinger.checkmagicfinger', compact('Tracking', 'Safety', 'selectedCauseId', 'selectedEventId', 'Cause','Event','Rank', 'Class_rank','plants' ,'Class_rank_label','exMail', 'exName'));
             
        
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+ 
+    public function update(Request $request, $id)
     {
-        //
+         
+        $todaySuccess = Carbon::now()->format('Ymd');
+        // 1. ค้นหาข้อมูลในตาราง safety_report
+        $safety = Safety::findOrFail($id);
+        // 2. อัปเดตข้อมูลตาราง safety_report (ส่วนที่ 1)
+        $safety->location_view = $request->sLocation_view;
+        $safety->cause_id      = $request->msCauseCheck;
+        $safety->report_date   = $request->report_date;
+        $safety->report_detail = $request->report_detail;     
+
+        // จัดการกรณีเลือก Unsafe Action (ID: 2) เพื่อบันทึก LSR
+        if ($request->msCauseCheck == 2) {
+            $safety->event_id   = $request->event_id;
+            $safety->event_note = ($request->event_id == 6) ? $request->event_note : null;
+        } else {
+            $safety->event_id   = null;
+            $safety->event_note = null;
+        }
+        // 1.ส่งรายงาน 2.หัวหน้ารับเรื่อง แก้ไข 3. รับเรื่องแก้ไข 4. ส่งเมล์ถึงผู้จัดการโรงงานปิดงาน 
+        if($request->assign_status == 1){
+
+            $safety->safety_status = 2;   //หัวหน้ารับเรื่อง
+            $safety->solve_status  = 1; // อัปเดตสถานะการแก้ไขเป็น "แก้ไขเรียบร้อยแล้ว"
+
+        }elseif($request->she_status == 1){
+
+            $safety->safety_status = 3; // อัปเดตสถานะเป็น "SHE ตรวจสอบแล้ว"
+            $safety->solve_status  = 1; 
+        }
+        $safety->save();
+
+        // 3. อัปเดตข้อมูลตาราง safety_tracking (อ้างอิงตาม safety_code)
+        $tracking = Tracking::where('safety_code', $safety->safety_code)->first();
+        
+        if ($tracking) {
+            // ส่วนที่ 2: สำหรับผู้จัดการ
+            $tracking->assign_solve_detail = $request->manager_suggestion;
+            $tracking->assign_solve_date   = $request->assign_solve_date;
+
+            // ส่วนที่ 3: สำหรับ SHE
+            $tracking->she_status          = $request->she_status;
+            $tracking->she_suggestion      = $request->she_suggestion;
+            $tracking->she_solve_date      = $request->she_solve_date;       
+
+
+            if ($request->hasFile('assign_solve_img')) {
+                foreach ($request->file('assign_solve_img') as $file) {
+                    $filename = Str::random() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('images/head_solve_img', $filename, 'public');
+                    $tracking->assign_solve_img = $path;                      
+                    $tracking->assign_success_date  =  $todaySuccess;
+                }
+            }
+
+            if ($request->hasFile('she_img')) {
+                foreach ($request->file('she_img') as $file) {
+                    $filename = Str::random() . '.' . $file->getClientOriginalExtension();
+                    $pathShe = $file->storeAs('images/she_solve_img', $filename, 'public');
+                    $tracking->she_solve_img = $pathShe;
+                }
+
+                $tracking->she_success_date  =  $todaySuccess;
+            } 
+
+
+         
+            $tracking->save();
+        }
+
+        return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
     }
+   
 
     /**
      * Remove the specified resource from storage.

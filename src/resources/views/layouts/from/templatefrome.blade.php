@@ -222,19 +222,13 @@
         <script src="{{ asset('template/assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 
 
-        <!-- Main JS -->
-        <!-- <script src="{{ asset('template/assets/js/main.js') }}"></script> -->
-        <!-- {{-- <script src="{{ asset('template/assets/js/pages-auth-multisteps.js') }}"></script> --}} -->
-
+ 
         <!-- Page JS -->
          @yield('customjs')
       
-        
-        <!-- <script src="{{ asset('assets/js/pages-she-approve.js')  }}"></script> -->
+ 
 
-
-        {{-- <script src="{{ asset('template/assets/js/form-wizard-numbered.js') }}"></script>
-        <script src="{{ asset('template/assets/js/form-wizard-validation.js') }}"></script> --}}
+ 
         @yield('jslogin')
 </body>
 

@@ -174,7 +174,7 @@ class FromController extends Controller
             // ================== เตรียมข้อมูลส่งเมล ==================
             $data = [
                 'headname'      => $manager->emp_name, // คนที่จะได้รับเรื่อง (Manager)
-                'name'          => $empfullname,       // คนรายงาน
+                'name'          => $manager->emp_name,       // คนรายงาน
                 'departuredate' => $todaySend,
                 'remark'        => 'แก้ไขเหตุการณ์ไม่ปลอดภัย',
                 'safety_code'   => $safety->safety_code,

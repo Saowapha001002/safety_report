@@ -120,6 +120,18 @@ class ApproveController extends Controller
             $approve->she_success_date  = Carbon::now(); // วันที่แก้ไขสำเร็จ 
         }
 
+        
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $filename = Str::random() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('images/head_solve_img', $filename, 'public');
+                $approve->assign_solve_img = $path ;                 
+            }
+        } 
+        
+
+
+
         try {
             $isSaved = $approve->save();
 
@@ -137,10 +149,18 @@ class ApproveController extends Controller
                     'class'   => 'error',
                 ]);
             }
-            // เปลี่ยนสถานะว่าตอนนี้เข้าสเต็ป SHE แล้ว
+         
             $safety->safety_status = 2;    // 2 = ส่งต่อ SHE-Plant
+            if ($request->hasFile('files')) {
+                // foreach ($request->file('files') as $file) {
+                //     $filename = Str::random() . '.' . $file->getClientOriginalExtension();
+                //     $path = $file->storeAs('images/head_solve_img', $filename, 'public');
+                    $safety->report_img_after = $path;
+                // }
+            }
+           
             $safety->save();
-            // หา SHE-Plant จาก approver_plant_mapping โดยใช้ plant_code ของ report_plant
+            
             $plantCode = $safety->location_view; // เช่น   BGC 
           
             // **ตรงนี้ให้เช็คในตาราง approver_role_master ว่า role_code จริงชื่ออะไร**       

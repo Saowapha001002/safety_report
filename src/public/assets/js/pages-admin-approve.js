@@ -1,15 +1,38 @@
-/**
- *  Form Wizard
- */
+    /**
+     *  Form Wizard
+     */
 
-'use strict'; 
+    'use strict'; 
+
+    function toggleCause(selected) {
+        const msEventTwo = document.getElementById('msEventTwo');
+
+        if (selected && selected.value === "2") {
+            msEventTwo.style.display = 'block';  // ← ให้โชว์
+            // msEventTwo.style.display = 'flex';
+            // msEventTwo.style.flexDirection = 'column';
+            $('.msCauseCheck').removeClass('none');
+        } else {
+            msEventTwo.style.display = 'none';   // ← ให้ซ่อน
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const selected = document.querySelector('input[name="msCauseCheck"]:checked');
+        toggleCause(selected);
+    });
+
 
  function toggleOtherInput(radio) {
         const selectedId = parseInt(radio.value);
         const otherInput = document.getElementById('otherEventInput');
 
         if (selectedId === 7 ) {
+
             otherInput.style.display = 'block';
+             $('.otherEventInput').removeClass('none');
+             otherEventInput.focus();
+
         } else {
             otherInput.style.display = 'none';
             document.getElementById('other_event_text').value = '';
@@ -25,26 +48,26 @@
     });
 
       // หากเลือก Unsafe Action การกระทำที่ไม่ปลอดภัย (Life Saveing Rules) ***  
-      function toggleCause(radio) {
-        const selectedValue = parseInt(radio.value);
-        const eventSection = document.getElementById('eventSection');
+    //   function toggleCause(radio) {
+    //     const selectedValue = parseInt(radio.value);
+    //     const eventSection = document.getElementById('eventSection');
        
-        // แสดงหรือซ่อนส่วนของเหตุการณ์ตามค่าที่เลือก
-        if (selectedValue === 2) {
-           console.log(selectedValue);
-            eventSection.style.display = 'block';
-        } else {
-            eventSection.style.display = 'none';
-        }
-    }
+    //     // แสดงหรือซ่อนส่วนของเหตุการณ์ตามค่าที่เลือก
+    //     if (selectedValue === 2) {
+    //        console.log(selectedValue);
+    //         eventSection.style.display = 'block';
+    //     } else {
+    //         eventSection.style.display = 'none';
+    //     }
+    // }
 
     // กรณีรีเฟรชหน้าและมีค่าที่เลือกอยู่แล้ว
-    document.addEventListener('DOMContentLoaded', function () {
-        const selected = document.querySelector('input[name="msCauseCheck"]:checked');
-        if (selected) {
-            toggleCause(selected);
-        }
-    });
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const selected = document.querySelector('input[name="msCauseCheck"]:checked');
+    //     if (selected) {
+    //         toggleCause(selected);
+    //     }
+    // });
  
 //upload file
 $('#add-file-she-approve').on('click', function () {

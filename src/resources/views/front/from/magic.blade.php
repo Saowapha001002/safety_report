@@ -3,8 +3,9 @@
 @section('contentfrom')
 <!-- Content -->
 <div class="container-xxl flex-grow-1 container-p-y">
-    {{-- <h4 class="py-2 mb-4"> </h4> --}}
-    <span class="h4 text-primary mb-0 app-brand-text fw-semibold">แบบฟอร์มรายงาน MAGIC FINGER</span>
+    <span class="h4 text-primary mb-0 app-brand-text fw-semibold d-block">
+        แบบฟอร์มรายงาน MAGIC FINGER
+    </span>
     <!-- Default -->
     <div class="row">
         <!-- สภาพการณ์ที่พบ -->
@@ -86,7 +87,7 @@
 
                                             @foreach ($plants as $p)
                                             <option value="{{ $p->plant_code }}">
-                                                {{ $p->plant_code }} 
+                                                {{ $p->plant_code }}
                                             </option>
                                             @endforeach
                                         </select>
@@ -297,5 +298,5 @@
 @endsection
 
 @section('customjs')
-  <script src="{{ asset('assets/js/pages-form-magic.js') }}"></script>
+<script src="{{ asset('assets/js/pages-form-magic.js') }}"></script>
 @endsection

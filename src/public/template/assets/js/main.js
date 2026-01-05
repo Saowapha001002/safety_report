@@ -4,6 +4,17 @@
 
 'use strict';
 
+// เพิ่มการตั้งค่า font family ให้ Tailwind
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    'fc': ['FC Iconic', 'sans-serif'],
+                }
+            }
+        }
+    }
+    
 let isRtl = window.Helpers.isRtl(),
   isDarkStyle = window.Helpers.isDarkStyle(),
   menu,

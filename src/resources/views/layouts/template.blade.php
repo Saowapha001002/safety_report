@@ -5,19 +5,13 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport"  content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>SAFETY Report</title>
 
     <meta name="description" content="" />
     <meta name="assets-path" content="{{ asset('template/assets/') }}">
-    <img src="{{ asset('assets/img/logo/BG_Logo.svg') }}" alt="Logo" width="100" height="100">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
-        rel="stylesheet" />
 
     <!-- Icons -->
     <link rel="stylesheet" href="{{ asset('template/assets/vendor/fonts/materialdesignicons.css') }}" />
@@ -45,50 +39,116 @@
     {{-- <script src="{{ asset('template/assets/vendor/js/template-customizer.js') }}"></script> --}}
     <script src="{{ asset('template/assets/js/config.js') }}"></script>
     <style>
-      .layout-page {
-        padding-top: 0 !important; /* ลดช่องว่างบนของเนื้อหา */
-      }
+        .layout-page {
+            padding-top: 0 !important;
+            /* ลดช่องว่างบนของเนื้อหา */
+        }
+
+        /* ปรับให้เนื้อหาลงมาจาก Navbar มากขึ้น */
+        .layout-navbar-fixed .layout-page .content-wrapper {
+            padding-top: 20px !important;
+        }
+
+        /* จัดการความกว้างสูงสุดของฟอร์มรายงานไม่ให้กว้างเกินไปบนจอใหญ่ */
+        .container-xxl {
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+        }
+
+        .font-fc {
+            font-family: 'FC Iconic', sans-serif !important;
+        }
+
+        /* ปรับแต่งส่วนหัวฟอร์มใน Content ให้ดูมีมิติ */
+        .form-header-custom {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 1. ปรับพื้นหลังของ Sidebar ทั้งหมดเป็นสีน้ำเงินเข้ม */
+        #layout-menu.bg-menu-theme {
+            background-color: #1e3a8a !important;
+            /* BG Dark Blue */
+            background-image: linear-gradient(180deg, #1e3a8a 0%, #111827 100%) !important;
+        }
+
+        /* 2. ปรับสีชื่อแบรนด์/โลโก้ด้านบนเมนู */
+        .app-brand .system-name {
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        /* 3. ปรับสีตัวอักษรเมนูหลัก (Menu Links) */
+        .menu-vertical .menu-item .menu-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        /* 4. ปรับสีตอนเอาเมาส์ไปชี้ (Hover) และเมนูที่กำลังใช้งาน (Active) */
+        .menu-vertical .menu-item.active>.menu-link,
+        .menu-vertical .menu-item .menu-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+        }
+
+        /* 5. ปรับสีไอคอนข้างหน้าเมนู */
+        .menu-vertical .menu-item .menu-icon {
+            color: #60a5fa !important;
+            /* สีฟ้าอ่อนเพื่อให้เด่นบนพื้นน้ำเงิน */
+        }
+
+        /* 6. ปรับสีหัวข้อเมนู (Menu Headers เช่น MASTER DATA) */
+        .menu-vertical .menu-header {
+            color: #93c5fd !important;
+            /* สีฟ้าจางๆ */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 7. เส้นคั่นเมนู */
+        .menu-header::before {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        /* ปรับแต่ง Scrollbar ของเมนูให้ดูเนียนตา */
+        .ps__thumb-y {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+        }
     </style>
 </head>
 
 <body>
     <!-- Loading Screen -->
-    <div id="loading-screen">
+    <!-- <div id="loading-screen">
         <div class="spinner"></div>
-    </div>
+    </div> -->
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <!-- Menu -->
 
             @include('layouts.slidebar')
-            <!-- / Menu -->
 
-            <!-- Layout container -->
             <div class="layout-page">
-                <!-- Navbar -->
-
                 @include('layouts.header')
 
-                <!-- / Navbar -->
+                <div class="content-wrapper">
 
-                <!-- Content wrapper -->
-                {{-- <div class="content-wrapper"> --}}
-                <!-- Content -->
+                    <div class="container-xxl flex-grow-1 container-p-y">
 
-                @yield('content')
-                <!-- / Content -->
+                        <div class="font-fc">
+                            @yield('content')
+                        </div>
 
-                <!-- Footer -->
+                    </div>
+                    @include('layouts.footer')
 
-                @include('layouts.footer')
-                <!-- / Footer -->
-
-                <div class="content-backdrop fade"></div>
-                {{-- </div> --}}
-                <!-- Content wrapper -->
+                    <div class="content-backdrop fade"></div>
+                </div>
             </div>
-            <!-- / Layout page -->
         </div>
 
         <!-- Overlay -->
@@ -112,7 +172,7 @@
     <script src="{{ asset('template/assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
     <script src="{{ asset('template/assets/vendor/js/menu.js') }}"></script>
     <script src="{{ asset('template/assets/vendor/libs/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/pages-admin-approve.js') }}"></script>
+
     <!-- endbuild -->
 
     <!-- Vendors JS -->
@@ -121,11 +181,12 @@
 
     <!-- Main JS -->
     <script src="{{ asset('template/assets/js/main.js') }}"></script>
-    <script src="{{ URL::signedRoute('secure.js', ['filename' => 'js//app-loading-screen.js']) }}"></script>
+    <!-- <script src="{{ URL::signedRoute('secure.js', ['filename' => 'js//app-loading-screen.js']) }}"></script> -->
 
     <!-- Page JS -->
     {{-- <script src="template/assets/js/dashboards-analytics.js"></script> --}}
     @yield('jscustom')
+    @yield('custom-backend-js')
 </body>
 
 </html>

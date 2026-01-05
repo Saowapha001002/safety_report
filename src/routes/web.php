@@ -11,6 +11,7 @@ use App\Http\Controllers\Front\MainController;
 use App\Http\Controllers\Front\FromController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\SheapproveController;
+use App\Http\Controllers\Back\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -95,6 +96,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/checkmagicfinger',      [CheckMagicFingerController::class, 'index'])->name('checkmagicfinger');
     Route::get('/checkmagicfinger/list', [CheckMagicFingerController::class, 'index'])->name('checkmagicfinger/list');
     Route::get('/checkmagicfinger/edit/{id}', [CheckMagicFingerController::class, 'edit'])->name('checkmagicfinger.page');
+    // เพิ่ม Route สำหรับบันทึกข้อมูล
+    Route::post('/checkmagicfinger/update/{id}', [CheckMagicFingerController::class, 'update'])->name('checkmagicfinger.update');
 
     // ===== Master Data : Rank =====
     Route::get('/rank',            [RankController::class, 'index'])->name('rank.index');
@@ -119,4 +122,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cause/edit/{id}',  [CauseController::class, 'edit'])->name('cause.edit');
     Route::put('/cause/update/{id}',[CauseController::class, 'update'])->name('cause.update');
     Route::get('/cause/list',       [CauseController::class, 'list'])->name('cause/list');
+
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard/export', [DashboardController::class, 'exportCsv'])->name('dashboard.index.export');
+
 });

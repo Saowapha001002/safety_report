@@ -13,29 +13,32 @@
             <div class="col-12 mb-lg-0 mb-4">
                 <div class="card invoice-preview-card">
                     <div class="card-body">
-                        <div class="row mx-0">
-                            <div class="col-md-7 mb-md-0 mb-4 ps-0">
-                                <div class="d-flex svg-illustration align-items-center gap-2 mb-4">
+                        <div class="row mx-0 align-items-center">
+                            <!-- ฝั่งโลโก้ + ชื่อฟอร์ม -->
+                            <div class="col-12 col-md-7 mb-3 mb-md-0 ps-0">
+                                <div class="d-flex flex-column flex-sm-row align-items-center gap-2">
                                     <span class="app-brand-logo demo">
-                                        <span style="color: var(--bs-primary)">
-                                            <img src="{{ asset('assets/img/logo/BG_Logo.svg') }}" alt="Logo"
-                                                width="100" height="100">
-                                        </span>
+                                        <img src="{{ asset('assets/img/logo/BG_Logo.svg') }}"
+                                            alt="Logo" width="80" height="80">
                                     </span>
-                                    <span class="h4 mb-0 app-brand-text fw-semibold">แบบฟรอม์รายงาน Magic Finger</span>
-                                </div>
 
+                                    <span class="h4 mb-0 fw-semibold app-brand-text">
+                                        แบบฟอร์มรายงาน MAGIC FINGER
+                                    </span>
+                                </div>
                             </div>
-                            <div class="col-md-5 pe-0 ps-0 ps-md-2">
+
+                            <!-- ฝั่งใบงานเลขที่ / วันที่ -->
+                            <div class="col-12 col-md-5 ps-0 ps-md-2">
                                 <dl class="row mb-2 g-2">
                                     <dt class="col-sm-6 mb-2 d-md-flex align-items-center justify-content-end">
-                                        <span class="h4 mb-0 app-brand-text fw-semibold">ใบงานเลขที่ </span>
+                                        <span class="h4 mb-0 fw-semibold">ใบงานเลขที่</span>
                                     </dt>
                                     <dd class="col-sm-6">
                                         <div class="input-group input-group-merge disabled">
                                             <span class="input-group-text">#</span>
                                             <input type="text" class="form-control" disabled
-                                                placeholder="ST202504290001" value="{{ $Tracking->safety_code }}" id="reportId" />
+                                                value="{{ $Tracking->safety_code }}" id="reportId" />
                                         </div>
                                     </dd>
                                     <dt class="col-sm-6 mb-2 d-md-flex align-items-center justify-content-end">
@@ -96,7 +99,9 @@
                                                 <div class="card shadow-none border p-2 h-90 mb-3">
                                                     <div class="rounded-2 text-center mb-3">
                                                         <a href="#">
-                                                            <img class="img-fluid" src="{{ asset('storage/' . $Safety->report_img_before) }}" alt="tutor image 1"></a>
+                                                            <img class="img-fluid"
+                                                                src="{{ asset('storage/' . $Safety->report_img_before) }}">
+                                                        </a>
                                                     </div>
                                                     <div class="card-body p-3 pt-2">
                                                         <a href="#" class="h5">รายละเอียดเหตุการณ์ :</a>
@@ -139,37 +144,40 @@
                                             <hr class="my-0" />
                                             <div class="card-body">
                                                 <div class="row">
-                                                    <span
-                                                        class="h4 text-capitalize mb-3 text-nowrap">ระดับความรุนเเรง Rank</span>
-                                                    <div class="col-sm-6 col-lg-3 mb-4">
-                                                        <div class="card {{ $Class_rank }}  h-100">
+                                                    <!-- หัวข้อ -->
+                                                    <div class="col-12">
+                                                        <h4 class="mb-3 text-wrap text-md-nowrap">
+                                                            ระดับความรุนแรง Rank
+                                                        </h4>
+                                                    </div>
+
+                                                    <!-- การ์ด Rank -->
+                                                    <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                                                        <div class="card {{ $Class_rank }} h-100">
                                                             <div class="card-body">
                                                                 <div class="d-flex align-items-center mb-2 pb-1">
                                                                     <div class="avatar me-2">
-                                                                        <span
-                                                                            class="avatar-initial   rounded {{ $Class_rank_label }} ">
-                                                                            <i
-                                                                                class="mdi mdi-source-fork mdi-20px"></i>
+                                                                        <span class="avatar-initial rounded {{ $Class_rank_label }}">
+                                                                            <i class="mdi mdi-source-fork mdi-20px"></i>
                                                                         </span>
                                                                     </div>
-                                                                    <h4 class="ms-1 mb-0 display-6">
+                                                                    <h4 class="ms-1 mb-0">
                                                                         {{ $Rank->rank }}
                                                                     </h4>
                                                                 </div>
-                                                                <p class="mb-0 text-heading">
+
+                                                                <p class="mb-1 text-heading">
                                                                     {{ $Rank->rank_mening }}
                                                                 </p>
                                                                 <p class="mb-0">
-                                                                    <span
-                                                                        class="me-1">{{ $Rank->rank_action }}</span>
-                                                                    {{-- <small class="text-muted">(และมีแผนใน 3  วัน)</small> --}}
+                                                                    <span class="me-1">{{ $Rank->rank_action }}</span>
                                                                 </p>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
+
                                             <hr class="my-0" />
                                             <div class="card-body">
                                                 <div class="row">
@@ -199,7 +207,7 @@
 
                                                     {{-- แก้ไขเรียบร้อยแล้ว + แนบรูปได้ --}}
                                                     <div class="form-check mb-3">
-                                                        <input class="form-check-input"   type="radio"     id="msCheck_done"    name="msCheck"    value="1" />
+                                                        <input class="form-check-input" type="radio" id="msCheck_done" name="msCheck" value="1" />
                                                         <label class="form-check-label fw-bold" for="msCheck_done">
                                                             ดำเนินการแก้ไขเรียบร้อยแล้ว พร้อมรูปภาพประกอบ (ถ้ามี)
                                                         </label>
@@ -228,7 +236,7 @@
 
                                                     {{-- ยังไม่ได้แก้ไข / อยู่ระหว่างดำเนินการ --}}
                                                     <div class="form-check mb-2">
-                                                        <input class="form-check-input"     type="radio"   id="msCheck_pending"          name="msCheck"    value="2" />
+                                                        <input class="form-check-input" type="radio" id="msCheck_pending" name="msCheck" value="2" />
                                                         <label class="form-check-label" for="msCheck_pending">
                                                             ยังไม่ได้แก้ไข / อยู่ระหว่างดำเนินการ
                                                         </label>
@@ -236,7 +244,7 @@
 
                                                     {{-- วันที่แก้ไขแล้ว / วันที่กำหนดให้เสร็จ --}}
                                                     <div class="col-12 form-floating form-floating-outline mt-3">
-                                                        <input type="date"    id="sDateEdit"   class="form-control"    name="sDateEdit"    placeholder="sDateEdit" />
+                                                        <input type="date" id="sDateEdit" class="form-control" name="sDateEdit" placeholder="sDateEdit" />
                                                         <label for="sDateEdit">วันเดือนปี ที่แก้ไขแล้ว / กำหนดแล้วเสร็จ</label>
                                                     </div>
                                                 </div>
@@ -252,12 +260,12 @@
                                                             <label for="note" class="form-label fw-medium">
                                                                 ระบุรายละเอียดแนวทางการแก้ไข:
                                                             </label>
-                                                            <textarea class="form-control"  rows="3"   id="note" name="note"
+                                                            <textarea class="form-control" rows="3" id="note" name="note"
                                                                 placeholder="อธิบายวิธีการแก้ไข หรือมาตรการเพิ่มเติม"></textarea>
                                                         </div>
                                                     </div>
 
-                                                    <button class="btn btn-primary d-grid w-100 mb-3 btn-submit-approve" type="submit"  id="btn-submit-approve">
+                                                    <button class="btn btn-primary d-grid w-100 mb-3 btn-submit-approve" type="submit" id="btn-submit-approve">
                                                         <span class="d-flex align-items-center justify-content-center text-nowrap">
                                                             <i class="mdi mdi-send-outline scaleX-n1-rtl me-2"></i>
                                                             Close Job / ส่งต่อ SHE-Plant
@@ -301,6 +309,6 @@
 
             @endsection
 
-@section('customjs')
-<script src="{{ asset('assets/js/pages-form-approve.js') }}"></script>
-@endsection
+            @section('customjs')
+            <script src="{{ asset('assets/js/pages-form-approve.js') }}"></script>
+            @endsection
